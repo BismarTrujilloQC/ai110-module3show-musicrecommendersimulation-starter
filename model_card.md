@@ -63,27 +63,26 @@ Prompts:
 
 Where the system struggles or behaves unfairly. 
 
-Prompts:  
-
-- Features it does not consider  
-- Genres or moods that are underrepresented  
-- Cases where the system overfits to one preference  
-- Ways the scoring might unintentionally favor some users  
+- System quietly ignores listeners who want moderate energy music. Most of the songs in the catalog are either  calm or  energetic, with very little in the middle, so someone whose ideal energy sits between those two extremes has  nothing that truly fits them.
 
 ---
 
 ## 7. Evaluation  
 
-How you checked whether the recommender behaved as expected. 
 
-Prompts:  
+**Profiles tested:** three normal listeners:
+- **Happy Pop** (pop, happy, high energy), 
+- **Chill Lofi** (lofi, chill, low energy, acoustic),
+- **Deep Intense Rock** (rock, intense, high energy)
 
-- Which user profiles you tested  
-- What you looked for in the recommendations  
-- What surprised you  
-- Any simple tests or comparisons you ran  
+  - plus three edge-case profiles to trip the scorer: 
+      - **Conflicting Energy** (high energy but a sad mood), 
+      - **Acoustic Lover** (acoustic but high energy),
+      - **Ghost Preferences** (a genre and mood that don't exist in the catalog).
 
-No need for numeric metrics unless you created some.
+**What surprised me:** Workout song "Gym Hero" kept showing up for the Happy Pop fan, even though it's tagged as intense, not happy. 
+
+**The reason** Is that this listener set their energy dial almost to the top (0.90), and the loudest songs at that level are gym anthems. The system gives "Gym Hero" credit for being pop *and* high energy, and those two points outweigh its wrong mood.
 
 ---
 
