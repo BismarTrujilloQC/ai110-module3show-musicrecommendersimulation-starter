@@ -41,9 +41,166 @@ All four terms are on a 0→1 scale before weighting, so the weight alone sets i
 
 **Biases:**  This system is really biased toward the user's favorite mood and energy level. It will not recommend songs that are outside of those preferences, even if they are good recommendations.
 
-
 ---
 
+## Sample Recommendation Output
+
+```
+ ============================================================
+  TOP RECOMMENDATIONS                                       
+============================================================
+
+  1. Sunrise City  -  Neon Echo
+     Score: 4.47 / 5.00
+     Why we picked it:
+       * matches your favorite mood (happy)
+       * energy 0.82 is close to your target 0.80
+       * matches your favorite genre (pop)
+
+  2. Rooftop Lights  -  Indigo Parade
+     Score: 3.44 / 5.00
+     Why we picked it:
+       * matches your favorite mood (happy)
+       * energy 0.76 is close to your target 0.80
+
+  3. Gym Hero  -  Max Pulse
+     Score: 2.30 / 5.00
+     Why we picked it:
+       * energy 0.93 is close to your target 0.80
+       * matches your favorite genre (pop)
+
+  4. Concrete Kingdom  -  Kairo Blaze
+     Score: 1.50 / 5.00
+     Why we picked it:
+       * energy 0.80 is close to your target 0.80
+
+  5. Fiesta del Sol  -  Los Corazones
+     Score: 1.44 / 5.00
+     Why we picked it:
+       * energy 0.84 is close to your target 0.80
+
+============================================================
+```
+---
+## Adversal profiles example
+ ```
+ ===========================================================
+  [ADVERSARIAL] CONFLICTING ENERGY VS MOOD                  
+============================================================
+
+  1. Moonlit Adagio  -  Vienna Strings
+     Score: 3.46 / 5.00
+     Why we picked it:
+       * matches your favorite mood (melancholic)
+       * energy 0.24 is close to your target 0.95
+       * matches your favorite genre (classical)
+       * fits your non-acoustic preference
+
+  2. Neon Pulse Drop  -  Volt Kandy
+     Score: 1.97 / 5.00
+     Why we picked it:
+       * energy 0.95 is close to your target 0.95
+       * fits your non-acoustic preference
+
+  3. Iron Verdict  -  Ashfall
+     Score: 1.95 / 5.00
+     Why we picked it:
+       * energy 0.97 is close to your target 0.95
+       * fits your non-acoustic preference
+
+  4. Gym Hero  -  Max Pulse
+     Score: 1.95 / 5.00
+     Why we picked it:
+       * energy 0.93 is close to your target 0.95
+       * fits your non-acoustic preference
+
+  5. Storm Runner  -  Voltline
+     Score: 1.89 / 5.00
+     Why we picked it:
+       * energy 0.91 is close to your target 0.95
+       * fits your non-acoustic preference
+
+============================================================
+
+
+============================================================
+  [ADVERSARIAL] ACOUSTIC LOVER, HIGH ENERGY                 
+============================================================
+
+  1. Neon Pulse Drop  -  Volt Kandy
+     Score: 4.53 / 5.00
+     Why we picked it:
+       * matches your favorite mood (euphoric)
+       * energy 0.95 is close to your target 0.95
+       * matches your favorite genre (edm)
+       * fits your acoustic preference
+
+  2. Gym Hero  -  Max Pulse
+     Score: 1.50 / 5.00
+     Why we picked it:
+       * energy 0.93 is close to your target 0.95
+       * fits your acoustic preference
+
+  3. Storm Runner  -  Voltline
+     Score: 1.49 / 5.00
+     Why we picked it:
+       * energy 0.91 is close to your target 0.95
+       * fits your acoustic preference
+
+  4. Iron Verdict  -  Ashfall
+     Score: 1.49 / 5.00
+     Why we picked it:
+       * energy 0.97 is close to your target 0.95
+       * fits your acoustic preference
+
+  5. Fiesta del Sol  -  Los Corazones
+     Score: 1.48 / 5.00
+     Why we picked it:
+       * energy 0.84 is close to your target 0.95
+       * fits your acoustic preference
+
+============================================================
+
+
+============================================================
+  [ADVERSARIAL] GHOST PREFERENCES                           
+============================================================
+
+  1. Velvet Hours  -  Nyra Soul
+     Score: 1.76 / 5.00
+     Why we picked it:
+       * energy 0.50 is close to your target 0.50
+       * fits your non-acoustic preference
+
+  2. Island Time  -  Sunny Roots
+     Score: 1.70 / 5.00
+     Why we picked it:
+       * energy 0.55 is close to your target 0.50
+       * fits your non-acoustic preference
+
+  3. Midnight Coding  -  LoRoom
+     Score: 1.52 / 5.00
+     Why we picked it:
+       * energy 0.42 is close to your target 0.50
+       * fits your non-acoustic preference
+
+  4. Dust & Diesel  -  Clay Hollow
+     Score: 1.52 / 5.00
+     Why we picked it:
+       * energy 0.58 is close to your target 0.50
+       * fits your non-acoustic preference
+
+  5. Night Drive Loop  -  Neon Echo
+     Score: 1.52 / 5.00
+     Why we picked it:
+       * energy 0.75 is close to your target 0.50
+       * fits your non-acoustic preference
+
+============================================================
+ ```
+
+
+---
 ## Getting Started
 
 ### Setup
@@ -104,7 +261,18 @@ Use this section to document the experiments you ran. For example:
 - What happened when you added tempo or valence to the score
 - How did your system behave for different types of users
 
----
+### Adversarial / Edge-Case Profiles
+
+I designed seven profiles to try to "trick" the scoring logic and observed the
+top 5 recommendations each produced. The terminal output for each run is below.
+
+**A. Conflicting energy vs. mood** — `energy 0.95` + `mood: melancholic`. A
+near-silent classical track wins on mood alone despite the user asking for high
+energy; the reason line still claims `energy 0.24 is close to your target 0.95`.
+
+
+
+
 
 ## Limitations and Risks
 

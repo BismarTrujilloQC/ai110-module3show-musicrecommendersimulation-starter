@@ -19,12 +19,65 @@ except ImportError:
 MAX_SCORE = 5.0  # See score_song(): W_MOOD + W_ENERGY + W_GENRE + W_ACOUSTIC.
 
 
-def print_recommendations(recommendations) -> None:
+USER_PROFILES = {
+    "High-Energy Pop": {
+        "favorite_genre": "pop",
+        "favorite_mood": "happy",
+        "target_energy": 0.90,
+        "likes_acoustic": False,
+    },
+    "Chill Lofi": {
+        "favorite_genre": "lofi",
+        "favorite_mood": "chill",
+        "target_energy": 0.35,
+        "likes_acoustic": True,
+    },
+    "Deep Intense Rock": {
+        "favorite_genre": "rock",
+        "favorite_mood": "intense",
+        "target_energy": 0.88,
+        "likes_acoustic": False,
+    },
+}
+
+
+# Three profiles built to "trick" score_song() and expose its blind spots.
+
+ADVERSARIAL_PROFILES = {
+    # Conflict: asks for high energy but a low-energy mood. Mood (weight 2.0)
+    # wins, so a near-silent track outranks the energetic songs the user wanted.
+    "Conflicting Energy vs Mood": {
+        "favorite_genre": "classical",
+        "favorite_mood": "melancholic",
+        "target_energy": 0.95,
+        "likes_acoustic": False,
+    },
+    # Hidden correlation: acoustic songs are all low-energy in this catalog, so
+    # "acoustic + high energy" can't co-exist. The winner is labeled acoustic
+    # while actually being one of the least acoustic tracks.
+    "Acoustic Lover, High Energy": {
+        "favorite_genre": "edm",
+        "favorite_mood": "euphoric",
+        "target_energy": 0.95,
+        "likes_acoustic": True,
+    },
+    # Ghost preferences: genre/mood don't exist in the catalog, so those terms
+    # silently score 0 and ranking collapses to energy + acoustic only.
+    "Ghost Preferences": {
+        "favorite_genre": "kpop",
+        "favorite_mood": "grumpy",
+        "target_energy": 0.50,
+        "likes_acoustic": False,
+    },
+}
+
+
+def print_recommendations(recommendations, title: str = "TOP RECOMMENDATIONS") -> None:
     """Render recommendations as a clean, readable terminal layout."""
     width = 60
     print()
     print("=" * width)
-    print("  TOP RECOMMENDATIONS".ljust(width))
+    print(f"  {title}".ljust(width))
     print("=" * width)
 
     for rank, rec in enumerate(recommendations, start=1):
@@ -48,26 +101,15 @@ def print_recommendations(recommendations) -> None:
 def main() -> None:
     songs = load_songs("data/songs.csv")
 
-    # Starter example profile.
-    user_prefs = {"genre": "pop", "mood": "happy", "energy": 0.8}
+    # Run the simulation for each distinct listener profile.
+    for profile_name, user_prefs in USER_PROFILES.items():
+        recommendations = recommend_songs(user_prefs, songs, k=5)
+        print_recommendations(recommendations, title=f"{profile_name.upper()} PICKS")
 
-    # Extra example profiles (not used yet — swap into recommend_songs() to try).
-    gym_listener = {
-        "favorite_genre": "pop",
-        "favorite_mood": "intense",
-        "target_energy": 0.92,
-        "likes_acoustic": False,
-    }
-    study_listener = {
-        "favorite_genre": "lofi",
-        "favorite_mood": "focused",
-        "target_energy": 0.38,
-        "likes_acoustic": True,
-    }
-
-    recommendations = recommend_songs(user_prefs, songs, k=5)
-
-    print_recommendations(recommendations)
+    # Then run the adversarial / edge-case profiles to stress-test the scorer.
+    for profile_name, user_prefs in ADVERSARIAL_PROFILES.items():
+        recommendations = recommend_songs(user_prefs, songs, k=5)
+        print_recommendations(recommendations, title=f"[ADVERSARIAL] {profile_name.upper()}")
 
 
 if __name__ == "__main__":
