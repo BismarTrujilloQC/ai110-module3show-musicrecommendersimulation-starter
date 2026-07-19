@@ -17,17 +17,25 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+There are two strategies for building a recommender system:
+1. **Content-based filtering**: *Intuition:* "here are songs whose attributes resemble what you already like". Builds profile from the feature of your favorites and matches new songs to it.
+2. **Collaborative filtering**: *Intuition:* "people who behave like you also liked X". *Collaborative filtering knows nothing about the music*. Only sees *interaction matrix* -> who played, skipped or repeated what
+  
+**My version:** Will prioritize content-based filtering, using *energy* and *mood* to match user preferences. 
 
-Some prompts to answer:
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
 - What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+- How does your `Recommender` compute a score for each song:
+  - Each song gets a single score from a weighted sum of two signals, with mood weighted more heavily so it drives the result:
+  ``` 
+  score = 
+  W_mood * mood_match -> 1 if song.mood == favorite_mood, else 0 
+  W_energy * energy_closeness -> # 1 - |song.energy - target_energy|
+  ```
+- How do you choose which songs to recommend:
+  - By score every song in the catalog, then rank them from highest to lowest score and return the top n-songs
 
-You can include a simple diagram or bullet list if helpful.
+
 
 ---
 
