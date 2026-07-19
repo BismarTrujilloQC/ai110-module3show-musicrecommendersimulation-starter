@@ -24,17 +24,22 @@ There are two strategies for building a recommender system:
 **My version:** Will prioritize content-based filtering, using *energy* and *mood* to match user preferences. 
 
 
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song:
-  - Each song gets a single score from a weighted sum of two signals, with mood weighted more heavily so it drives the result:
-  ``` 
-  score = 
-  W_mood * mood_match -> 1 if song.mood == favorite_mood, else 0 
-  W_energy * energy_closeness -> # 1 - |song.energy - target_energy|
-  ```
-- How do you choose which songs to recommend:
-  - By score every song in the catalog, then rank them from highest to lowest score and return the top n-songs
+**`UserProfile` stores:** `favorite_genre`, `favorite_mood`, `target_energy`, `likes_acoustic`.
 
+**Scoring:** each song gets one score from a weighted sum, ordered by priority `mood > energy > genre > acoustic`:
+
+```
+score = 2.0 * mood_match        # 1 if song.mood == favorite_mood else 0
+      + 1.5 * energy_closeness  # 1 - |song.energy - target_energy|
+      + 1.0 * genre_match       # 1 if song.genre == favorite_genre else 0
+      + 0.5 * acoustic_fit      # song.acousticness if likes_acoustic else 1 - song.acousticness
+```
+
+All four terms are on a 0→1 scale before weighting, so the weight alone sets importance. Max score = 5.0.
+
+**Choosing recommendations:** score every song, rank highest to lowest, return the top _k_.
+
+**Biases:**  This system is really biased toward the user's favorite mood and energy level. It will not recommend songs that are outside of those preferences, even if they are good recommendations.
 
 
 ---

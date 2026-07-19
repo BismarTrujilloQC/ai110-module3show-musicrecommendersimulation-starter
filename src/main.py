@@ -18,6 +18,21 @@ def main() -> None:
     # Starter example profile
     user_prefs = {"genre": "pop", "mood": "happy", "energy": 0.8}
 
+    gym_listener = {
+    "favorite_genre": "pop",
+    "favorite_mood": "intense",
+    "target_energy": 0.92, 
+    "likes_acoustic": False,
+}
+    study_listener = {
+    "favorite_genre": "lofi",
+    "favorite_mood": "focused",
+    "target_energy": 0.38,
+    "likes_acoustic": True,
+}
+
+
+
     recommendations = recommend_songs(user_prefs, songs, k=5)
 
     print("\nTop recommendations:\n")
