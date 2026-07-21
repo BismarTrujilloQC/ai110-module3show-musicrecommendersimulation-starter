@@ -1,6 +1,6 @@
 import csv
 from typing import List, Dict, Tuple, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 @dataclass
 class Song:
@@ -40,14 +40,36 @@ class Recommender:
         self.songs = songs
 
     def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
-        """Return the top k songs for the given user (not yet implemented)."""
-        # TODO: Implement recommendation logic
-        return self.songs[:k]
+        """
+        Return the top k songs for the given user, highest score first.
+
+        Reuses the shared score_song() judge so the OOP path and the
+        functional path (recommend_songs) rank songs identically. The
+        dataclasses are converted to dicts because score_song() reads
+        preferences and attributes by key.
+        """
+        user_prefs = asdict(user)
+        scored: List[Tuple[Song, float]] = []
+        for song in self.songs:
+            score, _reasons = score_song(user_prefs, asdict(song))
+            scored.append((song, score))
+
+        # Sort by score (index 1), highest first.
+        scored.sort(key=lambda item: item[1], reverse=True)
+
+        return [song for song, _score in scored[:k]]
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
-        """Return a human-readable reason a song was recommended (not yet implemented)."""
-        # TODO: Implement explanation logic
-        return "Explanation placeholder"
+        """
+        Return a human-readable sentence explaining why a song fits the user.
+
+        Builds the sentence from the same reasons score_song() collects, so
+        the explanation always matches the score that ranked the song.
+        """
+        _score, reasons = score_song(asdict(user), asdict(song))
+        if not reasons:
+            return f"'{song.title}' has no strong match with your preferences."
+        return f"'{song.title}' was recommended because it " + "; ".join(reasons) + "."
 
 def load_songs(csv_path: str) -> List[Dict]:
     """

@@ -11,7 +11,7 @@ Your goal is to:
 - Evaluate what your system gets right and wrong
 - Reflect on how this mirrors real world AI recommenders
 
-Replace this paragraph with your own summary of what your version does.
+**My version** is a content-based recommender called *MoodFinder*. It represents each song as a row of attributes (genre, mood, energy, acousticness, and more) and each listener as a taste profile (`favorite_genre`, `favorite_mood`, `target_energy`, `likes_acoustic`). It scores every song against the profile with a weighted sum, ranks them, and returns the top _k_ with a plain-English reason for each pick. I also run six listener profiles — three ordinary and three adversarial — to see where the scoring logic breaks down.
 
 ---
 
@@ -236,39 +236,33 @@ You can add more tests in `tests/test_recommender.py`.
 
 ---
 
-## Sample Recommendation Output
-
-Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
-
-```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
-```
-
-**Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
-
----
-
 ## Experiments You Tried
 
-Use this section to document the experiments you ran. For example:
-
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+- **Reordering the weight priority** (`mood > energy > genre > acoustic`) is what
+  makes a low-energy classical track beat the high-energy songs the "Conflicting
+  Energy vs Mood" user asked for — mood's weight of 2.0 simply outvotes everything.
+- **Running many different profiles** showed the catalog has almost no
+  moderate-energy songs, so the "Ghost Preferences" user (target 0.50) gets weak,
+  near-tied recommendations.
 
 ### Adversarial / Edge-Case Profiles
 
-I designed seven profiles to try to "trick" the scoring logic and observed the
-top 5 recommendations each produced. The terminal output for each run is below.
+I designed three adversarial profiles to try to "trick" the scoring logic and
+observed the top 5 recommendations each produced. The full terminal output for
+each run is shown in the "Adversarial profiles example" section above.
 
 **A. Conflicting energy vs. mood** — `energy 0.95` + `mood: melancholic`. A
 near-silent classical track wins on mood alone despite the user asking for high
 energy; the reason line still claims `energy 0.24 is close to your target 0.95`.
+
+**B. Acoustic lover, high energy** — the catalog's acoustic songs are all
+low-energy, so "acoustic + high energy" can't co-exist. The winner is labeled as
+fitting the acoustic preference while actually being one of the least acoustic
+tracks, because energy dominates the tie-break.
+
+**C. Ghost preferences** — a genre and mood that don't exist in the catalog.
+Those two terms silently score 0, so ranking quietly collapses to energy and
+acoustic fit only, with no warning to the user.
 
 
 
@@ -276,28 +270,33 @@ energy; the reason line still claims `energy 0.24 is close to your target 0.95`.
 
 ## Limitations and Risks
 
-Summarize some limitations of your recommender.
+- It only works on a tiny 20-song catalog, so recommendations run out fast.
+- Genre and mood are exact-string matches — "chill" and "relaxed" never count as
+  similar, and a genre that isn't in the catalog silently scores 0.
+- With mood weighted highest, the system over-favors mood and can hand back a
+  song whose energy is the opposite of what the user asked for.
+- It does not understand lyrics, language, or artist, only the numeric/label
+  features in the CSV.
 
-Examples:
-
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
-
-You will go deeper on this in your model card.
+I go deeper on these in the model card.
 
 ---
 
 ## Reflection
 
-Read and complete `model_card.md`:
+Building this made concrete that a recommender is only as good as the features and
+weights it's given: the "prediction" is really just arithmetic over labels, and the
+ranking reflects whatever the weights say matters most. The most striking moment was
+watching a workout track win for a happy-pop listener purely because their energy dial
+pointed at gym music — the system had no idea the mood was wrong.
 
-[**Model Card**](model_card.md)
+That's also where bias and unfairness sneak in. Because genre and mood are exact
+matches, listeners whose taste doesn't use the catalog's exact vocabulary get worse
+results, and any genre under-represented in the data is effectively invisible. A real
+recommender would amplify these gaps at scale, which is why knowing when to return
+"no strong match" is as important as picking a winner.
 
-Write 1 to 2 paragraphs here about what you learned:
-
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
+See the full [**Model Card**](model_card.md) for intended use, limitations, and evaluation.
 
 
 

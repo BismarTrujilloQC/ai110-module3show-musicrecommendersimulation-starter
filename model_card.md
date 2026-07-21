@@ -40,7 +40,7 @@ System quietly ignores listeners who want moderate energy music. Most of the son
 
 
 **Profiles tested:** three normal listeners:
-- **Happy Pop** (pop, happy, high energy), 
+- **High-Energy Pop** (pop, happy, high energy), 
 - **Chill Lofi** (lofi, chill, low energy, acoustic),
 - **Deep Intense Rock** (rock, intense, high energy)
 
@@ -49,7 +49,7 @@ System quietly ignores listeners who want moderate energy music. Most of the son
     - **Acoustic Lover** (acoustic but high energy),
     - **Ghost Preferences** (a genre and mood that don't exist in the catalog).
 
-**What surprised me:** Workout song "Gym Hero" kept showing up for the Happy Pop fan, even though it's tagged as intense, not happy. 
+**What surprised me:** Workout song "Gym Hero" kept showing up for the High-Energy Pop fan, even though it's tagged as intense, not happy. 
 
 **The reason** Is that this listener set their energy dial almost to the top (0.90), and the loudest songs at that level are gym anthems. The system gives "Gym Hero" credit for being pop *and* high energy, and those two points outweigh its wrong mood.
 
@@ -64,5 +64,5 @@ I would add more songs to fill the gaps, especially moderate energy songs. I wou
 ## 9. Personal Reflection  
 
 - Building this taught me that a recommender is only as smart as the numbers and labels it's given.
-- The most interesting moment was seeing a workout song win for a happy pop listener simply because their energy setting pointed at gym music
+- The most interesting moment was seeing a workout song win for a high-energy pop listener simply because their energy setting pointed at gym music
 - It made me realize that real music apps must handle messy, conflicting taste and that a good recommendation is often as much about knowing when to say no strong match as it is about picking a winner.
